@@ -13,7 +13,7 @@ require "pubnub"
 # PubNub's publish and subscribe keys of your PubNub's account.
 PUBNUB_PUBLISH_KEY = "pub-c-d39f048d-cfe8-431c-8b78-1a2c57e68524" # Something like: 'pub-c-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
 PUBNUB_SUBSCRIBE_KEY = "sub-c-ba8304ac-638b-11e9-acd4-021bd504a859"
-CLOUDINARY_URL = "cloudinary://651976141828929:IrK1sYdEiAJTlBLQmmSgCMANTro@mgould16" # Something like: 'sub-c-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+ # Something like: 'sub-c-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
 
 # A name of the PubNub channel to publish and subscribe to.
 PUBNUB_CHANNEL = 'cloudinary_photo_share'
@@ -39,7 +39,7 @@ end
 
 # Render the main page using index.haml HTML template
 get "/" do
-  @channel = PUBNUB_CHANNEL
+  @channel = 'cloudinary_photo_share'
   @subscribe_key = PUBNUB_SUBSCRIBE_KEY
   haml :index
 end
@@ -52,11 +52,11 @@ post "/share" do
     return { :success => false, :message => "Invalid upload signature" }.to_json if !preloaded.valid?
 
     # Intialize PubNub
-    pubnub = Pubnub.new( :publish_key => PUBNUB_PUBLISH_KEY, :subscribe_key => PUBNUB_SUBSCRIBE_KEY )
+    pubnub = Pubnub.new( :publish_key => "pub-c-d39f048d-cfe8-431c-8b78-1a2c57e68524", :subscribe_key => "sub-c-ba8304ac-638b-11e9-acd4-021bd504a859" )
 
     # Publish a message to the PubNub channel, including the identifier of the image uploaded to Cloudinary.
     pubnub.publish({
-      :channel => PUBNUB_CHANNEL,
+      :channel => 'cloudinary_photo_share',
       :message => {
         cloudinary_photo_id: preloaded.identifier,
         user: params[:user],
