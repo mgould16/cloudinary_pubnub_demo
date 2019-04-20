@@ -69,7 +69,7 @@ GEM
       dry-logic (~> 0.4, >= 0.4.0)
       dry-types (~> 0.11.0)
     erubis (2.7.0)
-    eventmachine (1.2.5)
+    eventmachine (1.0.3)
     haml (4.0.3)
       tilt
     hike (1.2.2)
