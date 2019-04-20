@@ -11,8 +11,9 @@ require "cloudinary"
 require "pubnub"
 
 # PubNub's publish and subscribe keys of your PubNub's account.
-PUBNUB_PUBLISH_KEY = ENV['PUBNUB_PUBLISH_KEY'] # Something like: 'pub-c-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-PUBNUB_SUBSCRIBE_KEY = ENV['PUBNUB_SUBSCRIBE_KEY'] # Something like: 'sub-c-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+PUBNUB_PUBLISH_KEY = "pub-c-d39f048d-cfe8-431c-8b78-1a2c57e68524" # Something like: 'pub-c-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+PUBNUB_SUBSCRIBE_KEY = "sub-c-ba8304ac-638b-11e9-acd4-021bd504a859"
+CLOUDINARY_URL = "cloudinary://651976141828929:IrK1sYdEiAJTlBLQmmSgCMANTro@mgould16" # Something like: 'sub-c-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
 
 # A name of the PubNub channel to publish and subscribe to.
 PUBNUB_CHANNEL = 'cloudinary_photo_share'
@@ -21,7 +22,7 @@ PUBNUB_CHANNEL = 'cloudinary_photo_share'
 helpers do
   include CloudinaryHelper
   def controller() nil end
-  def config() nil end  
+  def config() nil end
 end
 
 # Allow embedding in an iframe for demo purposes
@@ -37,7 +38,7 @@ get '/stylesheets/*.css' do
 end
 
 # Render the main page using index.haml HTML template
-get "/" do  
+get "/" do
   @channel = PUBNUB_CHANNEL
   @subscribe_key = PUBNUB_SUBSCRIBE_KEY
   haml :index
@@ -47,13 +48,13 @@ end
 post "/share" do
   if params[:photo_id].present?
     # Process and verify the received signed photo identifier
-    preloaded = Cloudinary::PreloadedFile.new(params[:photo_id])         
+    preloaded = Cloudinary::PreloadedFile.new(params[:photo_id])
     return { :success => false, :message => "Invalid upload signature" }.to_json if !preloaded.valid?
-    
+
     # Intialize PubNub
     pubnub = Pubnub.new( :publish_key => PUBNUB_PUBLISH_KEY, :subscribe_key => PUBNUB_SUBSCRIBE_KEY )
-    
-    # Publish a message to the PubNub channel, including the identifier of the image uploaded to Cloudinary. 
+
+    # Publish a message to the PubNub channel, including the identifier of the image uploaded to Cloudinary.
     pubnub.publish({
       :channel => PUBNUB_CHANNEL,
       :message => {
@@ -65,8 +66,8 @@ post "/share" do
       },
       :callback => lambda { |x| $stderr.puts("Shared #{preloaded.public_id}: #{x}") }
     })
-    content_type :json    
+    content_type :json
     { :success => true }.to_json
-  end  
+  end
 end
 
