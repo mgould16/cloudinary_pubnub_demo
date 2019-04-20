@@ -1,5 +1,5 @@
 /*
- * Cloudinary's jQuery library - v1.0.4 
+ * Cloudinary's jQuery library - v1.0.4
  * Copyright Cloudinary
  * see https://github.com/cloudinary/cloudinary_js
  */
@@ -8,7 +8,7 @@
   var CF_SHARED_CDN = "d3jpl91pxevbkh.cloudfront.net";
   var AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
   var SHARED_CDN = AKAMAI_SHARED_CDN;
-  
+
   function option_consume(options, option_name, default_value) {
     var result = options[option_name];
     delete options[option_name];
@@ -19,7 +19,7 @@
   }
   function present(value) {
     return typeof value != 'undefined' && ("" + value).length > 0;
-  } 
+  }
   function generate_transformation_string(options) {
     var width = options['width'];
     var height = options['height'];
@@ -27,15 +27,15 @@
     if (size) {
       var split_size = size.split("x");
       options['width'] = width = split_size[0];
-      options['height'] = height = split_size[1];  
-    }       
+      options['height'] = height = split_size[1];
+    }
     var has_layer = options.overlay || options.underlay;
-     
+
     var crop = option_consume(options, 'crop');
     var angle = build_array(option_consume(options, 'angle')).join(".");
 
     var no_html_sizes = has_layer || present(angle) || crop == "fit" || crop == "limit" || crop == "lfill";
-     
+
     if (width && (no_html_sizes || parseFloat(width) < 1)) delete options['width'];
     if (height && (no_html_sizes || parseFloat(height) < 1)) delete options['height'];
     if (!crop && !has_layer) width = height = undefined;
@@ -55,14 +55,14 @@
     }
     var effect = option_consume(options, "effect");
     if ($.isArray(effect)) effect = effect.join(":");
-    
+
     var border = option_consume(options, "border")
-    if ($.isPlainObject(border)) { 
+    if ($.isPlainObject(border)) {
       var border_width = "" + (border.width || 2);
       var border_color = (border.color || "black").replace(/^#/, 'rgb:');
       border = border_width + "px_solid_" + border_color;
     }
-    
+
     var flags = build_array(option_consume(options, 'flags')).join(".");
 
     var params = [['c', crop], ['t', named_transformation], ['w', width], ['h', height], ['b', background], ['e', effect], ['a', angle], ['bo', border], ['fl', flags]];
@@ -105,7 +105,7 @@
     dummyImg.src = null;
     return url;
   }
-  function cloudinary_url(public_id, options) { 
+  function cloudinary_url(public_id, options) {
     options = options || {};
     var type = option_consume(options, 'type', 'upload');
     if (type == 'fetch') {
@@ -117,26 +117,26 @@
     var format = option_consume(options, 'format');
     var cloud_name = option_consume(options, 'cloud_name', $.cloudinary.config().cloud_name);
     if (!cloud_name) throw "Unknown cloud_name";
-    var private_cdn = option_consume(options, 'private_cdn', $.cloudinary.config().private_cdn);    
-    var secure_distribution = option_consume(options, 'secure_distribution', $.cloudinary.config().secure_distribution);    
+    var private_cdn = option_consume(options, 'private_cdn', $.cloudinary.config().private_cdn);
+    var secure_distribution = option_consume(options, 'secure_distribution', $.cloudinary.config().secure_distribution);
     var cname = option_consume(options, 'cname', $.cloudinary.config().cname);
     var cdn_subdomain = option_consume(options, 'cdn_subdomain', $.cloudinary.config().cdn_subdomain);
-    var secure = option_consume(options, 'secure', window.location.protocol == 'https:'); 
-    secure_distribution = secure_distribution || SHARED_CDN; 
+    var secure = option_consume(options, 'secure', window.location.protocol == 'https:');
+    secure_distribution = secure_distribution || SHARED_CDN;
 
     if (type == 'fetch') {
-      public_id = absolutize(public_id); 
+      public_id = absolutize(public_id);
     }
-    
+
     if (public_id.match(/^https?:/)) {
       if (type == "upload" || type == "asset") return public_id;
-      public_id = encodeURIComponent(public_id).replace(/%3A/g, ":").replace(/%2F/g, "/"); 
+      public_id = encodeURIComponent(public_id).replace(/%3A/g, ":").replace(/%2F/g, "/");
     } else if (format) {
       public_id += "." + format;
     }
 
     var prefix = window.location.protocol == 'file:' ? "file://" : (secure ? 'https://' : 'http://');
-    if (cloud_name.match(/^\//) && !secure) {    
+    if (cloud_name.match(/^\//) && !secure) {
       prefix = "/res" + cloud_name;
     } else {
 	    var subdomain = cdn_subdomain ? "a" + ((crc32(public_id) % 5) + 1) + "." : "";
@@ -156,13 +156,13 @@
     var width = option_consume(options, 'html_width');
     var height = option_consume(options, 'html_height');
     if (width) options['width'] = width;
-    if (height) options['height'] = height;    
+    if (height) options['height'] = height;
   }
   var cloudinary_config = undefined;
   $.cloudinary = {
-    CF_SHARED_CDN: CF_SHARED_CDN,  
+    CF_SHARED_CDN: CF_SHARED_CDN,
     AKAMAI_SHARED_CDN: AKAMAI_SHARED_CDN,
-    SHARED_CDN: SHARED_CDN,    
+    SHARED_CDN: SHARED_CDN,
     config: function(new_config, new_value) {
       if (!cloudinary_config) {
         cloudinary_config = {};
@@ -181,15 +181,15 @@
     },
     url: function(public_id, options) {
       options = $.extend({}, options);
-      return cloudinary_url(public_id, options);    
-    },    
+      return cloudinary_url(public_id, options);
+    },
     url_internal: cloudinary_url,
     transformation_string: generate_transformation_string,
     image: function(public_id, options) {
       options = $.extend({}, options);
       var url = cloudinary_url(public_id, options);
       html_only_attributes(options);
-      return $('<img/>').attr(options).attr('src', url);      
+      return $('<img/>').attr(options).attr('src', url);
     },
     facebook_profile_image: function(public_id, options) {
       return $.cloudinary.image(public_id, $.extend({type: 'facebook'}, options));
@@ -212,7 +212,7 @@
       var img_options = $.extend({width: $(this).attr('width'), height: $(this).attr('height'),
                           src: $(this).attr('src')},
                          $.extend($(this).data(), options));
-      var public_id = option_consume(img_options, 'source', option_consume(img_options, 'src')); 
+      var public_id = option_consume(img_options, 'source', option_consume(img_options, 'src'));
       var url = cloudinary_url(public_id, img_options);
       html_only_attributes(img_options);
       $(this).attr({src: url, width: img_options['width'], height: img_options['height']});
@@ -317,12 +317,12 @@ function crc32 (str) {
       headers: {"X-Requested-With": "XMLHttpRequest"}
     }, options);
     this.fileupload(options).bind("fileuploaddone", function(e, data) {
-      if (data.result.error) return;      
-      data.result.path = ["v", data.result.version, "/", data.result.public_id, 
+      if (data.result.error) return;
+      data.result.path = ["v", data.result.version, "/", data.result.public_id,
                           data.result.format ? "." + data.result.format : ""].join("");
-  
+
       if (data.cloudinaryField && data.form.length > 0) {
-        var upload_info = [data.result.resource_type, "upload", data.result.path].join("/") + "#" + data.result.signature;  
+        var upload_info = [data.result.resource_type, "upload", data.result.path].join("/") + "#" + data.result.signature;
         var field = $(data.form).find('input[name="' + data.cloudinaryField + '"]');
         if (field.length > 0) {
           field.val(upload_info);
@@ -338,7 +338,7 @@ function crc32 (str) {
     }
     return this;
   };
-  
+
   $(function() {
     $("input.cloudinary-fileupload[type=file]").cloudinary_fileupload();
   });
