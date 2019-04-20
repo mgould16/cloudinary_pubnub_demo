@@ -160,10 +160,11 @@
       #header
         .inner
           %a{:href => "http://cloudinary.com/", :target => "_blank"}
-            = cl_image_tag("cloudinary_logo.png", :height => 30, :width => 142, :crop => :scale, :class => "cloudinary_logo")
+            = cl_image_path("cloudinary_logo.png", :cloud_name => "mgould16", :height => 30, :width => 142, :crop => :scale, :class => "cloudinary_logo")
           %h1 Photo Share - Demo
           %a{:href => "http://www.pubnub.com/", :target => "_blank"}
-            = cl_image_tag("pubnub_logo.png", :height => 24, :width => 107, :crop => :scale, :class => "pubnub_logo")
+            = cl_image_tag("cloudinary_logo.png", :cloud_name => "mgould16", :height => 24, :width => 107, :crop => :scale, :class => "pubnub_logo")
+
 
       #content
         .upload_section
@@ -178,7 +179,7 @@
                 .upload_button_holder
                   %input{:type => "submit", :value => "Select Photo", :class => "select_files"}
                   -# Cloudinary's direct image uploading tag with incoming and eager transformations. Signature is generated on the server side.
-                  = cl_image_upload_tag(:photo_id, :resource_type => :image,
+                  = cl_image_upload_tag(:photo_id, :resource_type => :image, :cloud_name => "mgould16", :api_key => "651976141828929", :api_secret => "IrK1sYdEiAJTlBLQmmSgCMANTro",
                       :transformation => incoming_transformation, :eager => transformations.values + [large_transformation])
 
             %a{:href => "#", :class => "details_link"} How does it work?
