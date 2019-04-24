@@ -8,3 +8,4 @@ gem 'haml'
 gem 'sass'
 gem 'cloudinary'
 gem 'pubnub'
+gem 'dotenv-rails', groups: [:development, :test]
